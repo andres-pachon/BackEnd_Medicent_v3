@@ -6,7 +6,8 @@ from app.database.connection import db
 from app.services.tratamiento_service import (
     crear_tratamiento,
     obtener_tratamientos_por_paciente,
-    obtener_tratamiento_por_id
+    obtener_tratamiento_por_id,
+    eliminar_tratamiento
 )
 
 class TestTratamientoService(BaseTestCase):
@@ -120,3 +121,25 @@ class TestTratamientoService(BaseTestCase):
         # Paciente sin tratamientos
         sin_tratamientos = obtener_tratamientos_por_paciente(8888)
         self.assertEqual(len(sin_tratamientos), 0)
+
+    def test_eliminar_tratamiento_exitoso_y_en_cascada(self):
+        """Debe eliminar un tratamiento y todas sus tomas asociadas en cascada."""
+        tratamiento = crear_tratamiento(
+            paciente_id=self.paciente.id,
+            medicamento_id=self.medicamento.id,
+            dosis="1 cápsula",
+            frecuencia_horas=8,
+            fecha_inicio=date(2026, 11, 1),
+            fecha_fin=date(2026, 11, 2),
+            hora_inicial=time(8, 0, 0)
+        )
+        t_id = tratamiento.id
+        self.assertIsNotNone(obtener_tratamiento_por_id(t_id))
+
+        exito = eliminar_tratamiento(t_id)
+        self.assertTrue(exito)
+        self.assertIsNone(obtener_tratamiento_por_id(t_id))
+
+        # Eliminar tratamiento inexistente lanza ValueError
+        with self.assertRaises(ValueError):
+            eliminar_tratamiento(99999)

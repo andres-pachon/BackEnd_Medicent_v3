@@ -2,7 +2,8 @@ from flask import request, jsonify
 from datetime import date, time
 from app.services.tratamiento_service import (
     crear_tratamiento,
-    obtener_tratamientos_por_paciente
+    obtener_tratamientos_por_paciente,
+    eliminar_tratamiento
 )
 
 def crear_tratamiento_controller():
@@ -54,3 +55,15 @@ def listar_tratamientos_paciente_controller(paciente_id):
     """Retorna los tratamientos asociados a un paciente en formato JSON."""
     tratamientos = obtener_tratamientos_por_paciente(paciente_id)
     return jsonify([t.to_dict() for t in tratamientos]), 200
+
+
+def eliminar_tratamiento_controller(tratamiento_id):
+    """Elimina un tratamiento específico y todas sus tomas vinculadas."""
+    try:
+        eliminar_tratamiento(tratamiento_id)
+        return jsonify({"mensaje": f"Tratamiento #{tratamiento_id} eliminado exitosamente."}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 404
+    except Exception as e:
+        return jsonify({"error": "Error interno al eliminar el tratamiento."}), 500
+

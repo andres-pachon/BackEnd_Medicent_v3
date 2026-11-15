@@ -57,3 +57,16 @@ def obtener_tratamiento_por_id(tratamiento_id):
     Busca un tratamiento por su ID.
     """
     return db.session.get(Tratamiento, tratamiento_id)
+
+
+def eliminar_tratamiento(tratamiento_id):
+    """
+    Elimina un tratamiento y en cascada todas sus tomas asociadas.
+    """
+    tratamiento = db.session.get(Tratamiento, tratamiento_id)
+    if not tratamiento:
+        raise ValueError(f"No se encontró el tratamiento con ID {tratamiento_id}.")
+    db.session.delete(tratamiento)
+    db.session.commit()
+    return True
+

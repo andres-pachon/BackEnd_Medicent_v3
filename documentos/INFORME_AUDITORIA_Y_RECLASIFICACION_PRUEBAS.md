@@ -96,3 +96,4 @@ Prueban peticiones HTTP reales a la API de Flask:
 
 ## 5. Conclusión y Recomendación
 El trabajo realizado por el equipo abarca una **cobertura unitaria robusta (65.5% de la suite)**, blindando todas las capas críticas: cálculo matemático, modelos ORM, servicios de negocio, cifrado Bcrypt y tokens JWT, complementado con una **capa de integración sólida (34.5%)** que certifica los contratos HTTP de la API REST.
+

@@ -7,10 +7,10 @@ from app.services.toma_service import (
 def marcar_toma_controller(toma_id):
     """Maneja la actualización de estado de una toma médica."""
     data = request.get_json() or {}
-    nuevo_estado = data.get("nuevo_estado")
+    nuevo_estado = data.get("nuevo_estado") or data.get("estado")
 
     if not nuevo_estado:
-        return jsonify({"error": "El campo 'nuevo_estado' es obligatorio."}), 400
+        return jsonify({"error": "El campo 'nuevo_estado' o 'estado' es obligatorio."}), 400
 
     try:
         toma_actualizada = marcar_toma(toma_id=toma_id, nuevo_estado=nuevo_estado)

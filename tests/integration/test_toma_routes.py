@@ -37,6 +37,17 @@ class TestTomaRoutes(BaseTestCase):
         self.assertEqual(data["toma"]["estado"], "tomada")
         self.assertIsNotNone(data["toma"]["fecha_hora_toma"])
 
+    def test_marcar_toma_endpoint_acepta_campo_estado(self):
+        """PATCH /api/tomas/<id> con estado='tomada' (enviado por app móvil) retorna 200."""
+        payload = {"estado": "tomada"}
+        segunda_toma = self.tratamiento.tomas[1]
+        response = self.client.patch(f"/api/tomas/{segunda_toma.id}", json=payload)
+
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertIn("toma", data)
+        self.assertEqual(data["toma"]["estado"], "tomada")
+
     def test_marcar_toma_estado_invalido_retorna_400(self):
         """PATCH /api/tomas/<id> con estado desconocido debe retornar 400."""
         payload = {"nuevo_estado": "inventado"}

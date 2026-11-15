@@ -75,3 +75,24 @@ class TestTratamientoRoutes(BaseTestCase):
         self.assertIsInstance(data, list)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["dosis"], "1 tableta")
+
+    def test_eliminar_tratamiento_endpoint(self):
+        """DELETE /api/tratamientos/<id> debe eliminar el tratamiento y retornar 200."""
+        payload = {
+            "paciente_id": self.paciente.id,
+            "medicamento_id": self.medicamento.id,
+            "dosis": "1 cápsula",
+            "frecuencia_horas": 8,
+            "fecha_inicio": "2026-11-01",
+            "fecha_fin": "2026-11-02",
+            "hora_inicial": "08:00:00"
+        }
+        res_post = self.client.post("/api/tratamientos", json=payload)
+        t_id = res_post.get_json()["tratamiento"]["id"]
+
+        res_del = self.client.delete(f"/api/tratamientos/{t_id}")
+        self.assertEqual(res_del.status_code, 200)
+
+        # Intentar borrar de nuevo debe retornar 404
+        res_del_404 = self.client.delete(f"/api/tratamientos/{t_id}")
+        self.assertEqual(res_del_404.status_code, 404)
